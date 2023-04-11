@@ -323,7 +323,6 @@ const Keyboard = () => {
             onClick={() => InputHandle()}
             className={`${Styles.key} ${Styles.window}`}
           >
-            {" "}
             ⊞
           </div>
           <div
