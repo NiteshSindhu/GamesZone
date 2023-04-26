@@ -12,12 +12,14 @@
   -o-border-radius: 10px;
   border-radius: 10px;
   margin-top: 20px;
+  box-sizing: border-box;
 }
 .keyboard > div {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   grid-gap: 10px;
   outline: none;
+  box-sizing: border-box;
 }
 .keyboard > div:first-child {
   grid-template-areas: "key1st key1 key2 key3 key4 key5 key6 key7 key8 key9 key0 delete ";
@@ -40,6 +42,7 @@
   justify-content: center;
   align-items: center;
   background-color: rgb(37, 36, 36);
+  cursor: pointer;
 
   font-size: 1.2rem;
   font-weight: bold;
@@ -51,6 +54,7 @@
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
+  box-sizing: border-box;
 }
 .key:hover {
   background-color: aqua;
@@ -133,21 +137,23 @@
   position: relative;
 }
 
-.key>span{
+.key > span {
   position: absolute;
-  top: 10px;right: 10px;
+  top: 10px;
+  right: 10px;
   width: 5px;
   height: 5px;
-  color:white;
+  color: white;
   background-color: white;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   -ms-border-radius: 50%;
   -o-border-radius: 50%;
   border-radius: 50%;
+  box-sizing: border-box;
 }
-.key>.capsLock{
-background-color: aqua;
+.key > .capsLock {
+  background-color: aqua;
 }
 .keyA {
   grid-area: a;
@@ -240,4 +246,32 @@ background-color: aqua;
 }
 .arrow {
   grid-area: arrow;
+}
+
+.Word {
+  display: flex;
+  width: 80%;
+  margin: auto;
+  align-items: center;
+}
+
+.users {
+  background-color: antiquewhite;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  margin: auto;
+  width: 40%;
+  margin-top: 50px;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  /* color:red */
+}
+
+/* .users>h3{
+    border:2px solid green;
+    color: red;
+  } */
+.users > input {
+  width: 60%;
+  border: 5px solid cyan;
 }

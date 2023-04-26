@@ -1,0 +1,15 @@
+.users{
+background-color: antiquewhite;
+box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+margin: auto;
+width: 40%;
+margin-top: 50px;
+padding: 20px 10px;
+display: flex;
+flex-direction: column
+/* color:red */
+};
+.users>input{
+    width: 60%;
+    height: 40px;
+}

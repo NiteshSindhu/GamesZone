@@ -1,14 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Styles from "../Styles/keyboard.module.css";
+import axios from "axios";
+import {
+  handleWordError,
+  handleWordRequest,
+  handleWordSuccessful,
+} from "../Redux/action";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 const Keyboard = () => {
+  const { isWords, wordLoading, wordError, wordLength } = useSelector(
+    (word) => word,
+    shallowEqual
+  );
+  const dispatch = useDispatch();
   const [word, setWord] = useState("");
+  const [sameWord, setSameWord] = useState("");
   const [capsOn, setCapsOn] = useState(false);
+  const [score, setScore] = useState(0);
   const [shiftOn, setShiftOn] = useState(false);
 
-  const CheckSting = (value) => typeof value==="string";
+  const [seconds, setSeconds] = useState(10);
+
+  useEffect(() => {
+    if (seconds > 0) {
+      const interval = setInterval(() => {
+        setSeconds(seconds - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [seconds]);
+
+  const CheckSting = (value) => typeof value === "string";
   const InputHandle = (value) => {
-    // console.log(CheckSting(value)?"True":"False");
+    /**
+     * The function handles input and applies capitalization based on the state of caps lock and shift
+     * keys.
+     */
     if (value) {
       if (!capsOn && shiftOn && CheckSting(value)) {
         value = value.toUpperCase();
@@ -18,9 +46,35 @@ const Keyboard = () => {
         value = value.toUpperCase();
       }
       setWord((word) => word + value);
+      const totalLength = word.length + 1;
+      if (wordLength === totalLength) {
+        CheckWord(word + value);
+      }
     }
     setShiftOn(false);
     // console.log(word);
+  };
+
+  const CheckWord = (word) => {
+    let flag = true;
+    for (let i = 0; i < wordLength; i++) {
+      if (word[i] !== isWords[i]) {
+        flag = false;
+        break;
+      }
+    }
+    if (flag) {
+      setScore(score + wordLength);
+      setSameWord("Yes");
+    } else {
+      setScore(score - wordLength);
+      setSameWord("No");
+    }
+    setTimeout(() => {
+      setWord("");
+      NewWords();
+      setSameWord("");
+    }, 2000);
   };
 
   const CapsLockOn = () => {
@@ -30,9 +84,62 @@ const Keyboard = () => {
   const handleShiftOn = () => {
     setShiftOn(!shiftOn);
   };
+
+  const NewWords = async () => {
+    dispatch(handleWordRequest());
+    try {
+      const givenWord = await axios.get("http://localhost:8080/word");
+      // console.log(givenWord.data);
+      dispatch(handleWordSuccessful(givenWord.data));
+    } catch (err) {
+      dispatch(handleWordError());
+    }
+  };
+
+  useEffect(() => {
+    NewWords();
+  }, []);
+  // const progress = ((10 - seconds) / 10) * 100;
+
   return (
     <>
-      <h1>{word}</h1>
+      <div
+        className={Styles.Word}
+        style={{ justifyContent: wordLoading ? "center" : "space-between" }}
+      >
+        {wordLoading ? (
+          <h1>Loading...</h1>
+        ) : (
+          <>
+            <div
+              style={{
+                color:
+                  sameWord === "Yes" ? "green" : sameWord === "No" ? "red" : "",
+              }}
+            >
+              <h1>Word</h1>
+              <h1>{isWords}</h1>
+            </div>
+            <div
+              style={{
+                color: score > 0 ? "green" : score < 0 ? "red" : "",
+              }}
+            >
+              <h1>Score</h1>
+              <h1>{score}</h1>
+            </div>
+            <div
+              style={{
+                color:
+                  seconds > 7 ? "mint-green" : seconds < 4 ? "red" : "orange",
+              }}
+            >
+              <h1>Time</h1>
+              <h1>{seconds}</h1>
+            </div>
+          </>
+        )}
+      </div>
       <div className={Styles.keyboard}>
         <div>
           <div
